@@ -20,6 +20,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
   final List<Widget>? appBarActions;
   final bool closeWhenSwipeUp;
   final bool closeWhenSwipeDown;
+  final void Function(int)? onImagePress; // << added
 
   const GalleryImageViewWrapper({
     Key? key,
@@ -38,6 +39,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
     required this.appBarActions,
     required this.closeWhenSwipeUp,
     required this.closeWhenSwipeDown,
+    this.onImagePress, // << added
   }) : super(key: key);
 
   @override
@@ -48,7 +50,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
 
 class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
   late final PageController _controller =
-  PageController(initialPage: widget.initialIndex ?? 0);
+      PageController(initialPage: widget.initialIndex ?? 0);
   int _currentPage = 0;
 
   @override
@@ -130,13 +132,18 @@ class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
   Widget _buildImage(GalleryItemModel item) {
     return Hero(
       tag: item.id,
-      child: InteractiveViewer(
-        minScale: widget.minScale,
-        maxScale: widget.maxScale,
-        child: Center(
-          child: AppCachedNetworkImage(
-            imageUrl: item.imageUrl,
-            loadingWidget: widget.loadingWidget,
+      child: GestureDetector(
+        onTap: () {
+          // Trigger callback for the currently focused/full-screen image
+          widget.onImagePress?.call(item.index);
+        },
+        child: InteractiveViewer(
+          minScale: widget.minScale,
+          maxScale: widget.maxScale,
+          child: Center(
+            child: AppCachedNetworkImage(
+              imageUrl: item.imageUrl,
+              loadingWidget: widget.loadingWidget,
             errorWidget: widget.errorWidget,
             radius: widget.radius,
           ),
