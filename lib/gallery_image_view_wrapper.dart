@@ -17,6 +17,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
   final bool reverse;
   final bool showListInGalley;
   final bool showAppBar;
+  final List<Widget>? appBarActions;
   final bool closeWhenSwipeUp;
   final bool closeWhenSwipeDown;
 
@@ -34,6 +35,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
     required this.reverse,
     required this.showListInGalley,
     required this.showAppBar,
+    required this.appBarActions,
     required this.closeWhenSwipeUp,
     required this.closeWhenSwipeDown,
   }) : super(key: key);
@@ -46,7 +48,7 @@ class GalleryImageViewWrapper extends StatefulWidget {
 
 class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
   late final PageController _controller =
-      PageController(initialPage: widget.initialIndex ?? 0);
+  PageController(initialPage: widget.initialIndex ?? 0);
   int _currentPage = 0;
 
   @override
@@ -71,14 +73,15 @@ class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
     return Scaffold(
       appBar: widget.showAppBar
           ? AppBar(
-              title: Text(widget.titleGallery ?? "Gallery"),
-            )
+        title: Text(widget.titleGallery ?? "Gallery"),
+        actions: widget.appBarActions,
+      )
           : null,
       backgroundColor: widget.backgroundColor,
       body: SafeArea(
         child: Container(
           constraints:
-              BoxConstraints.expand(height: MediaQuery.of(context).size.height),
+          BoxConstraints.expand(height: MediaQuery.of(context).size.height),
           child: Column(
             children: [
               Expanded(

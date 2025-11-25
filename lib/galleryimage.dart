@@ -27,8 +27,10 @@ class GalleryImage extends StatefulWidget {
   final bool reverse;
   final bool showListInGalley;
   final bool showAppBar;
+  final List<Widget>? appBarActions;
   final bool closeWhenSwipeUp;
   final bool closeWhenSwipeDown;
+  final void Function(int)? onImagePress;
 
   const GalleryImage({
     Key? key,
@@ -51,8 +53,10 @@ class GalleryImage extends StatefulWidget {
     this.reverse = false,
     this.showListInGalley = true,
     this.showAppBar = true,
+    this.appBarActions,
     this.closeWhenSwipeUp = false,
     this.closeWhenSwipeDown = false,
+    this.onImagePress,
   })  : assert(numOfShowImages <= imageUrls.length),
         super(key: key);
   @override
@@ -60,7 +64,6 @@ class GalleryImage extends StatefulWidget {
 }
 
 class _GalleryImageState extends State<GalleryImage> {
-  
   List<GalleryItemModel> galleryItems = <GalleryItemModel>[];
   @override
   void initState() {
@@ -69,46 +72,46 @@ class _GalleryImageState extends State<GalleryImage> {
   }
 
   @override
-  void didUpdateWidget(covariant GalleryImage oldWidget) {
-    _buildItemsList(widget.imageUrls);
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return galleryItems.isEmpty
         ? const EmptyWidget()
         : GridView.builder(
-            primary: false,
-            itemCount: galleryItems.length > 3
-                ? widget.numOfShowImages
-                : galleryItems.length,
-            padding: widget.padding,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              childAspectRatio: widget.childAspectRatio,
-              crossAxisCount: widget.crossAxisCount,
-              mainAxisSpacing: widget.mainAxisSpacing,
-              crossAxisSpacing: widget.crossAxisSpacing,
-            ),
-            shrinkWrap: true,
-            itemBuilder: (BuildContext context, int index) {
-              return _isLastItem(index)
-                  ? _buildImageNumbers(index)
-                  : GalleryItemThumbnail(
-                      galleryItem: galleryItems[index],
-                      onTap: () {
-                        _openImageFullScreen(index);
-                      },
-                      loadingWidget: widget.loadingWidget,
-                      errorWidget: widget.errorWidget,
-                      radius: widget.imageRadius,
-                    );
-            });
+        primary: false,
+        itemCount: galleryItems.length > 3
+            ? widget.numOfShowImages
+            : galleryItems.length,
+        padding: widget.padding,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: widget.childAspectRatio,
+          crossAxisCount: widget.crossAxisCount,
+          mainAxisSpacing: widget.mainAxisSpacing,
+          crossAxisSpacing: widget.crossAxisSpacing,
+        ),
+        shrinkWrap: true,
+        itemBuilder: (BuildContext context, int index) {
+          return _isLastItem(index)
+              ? _buildImageNumbers(index)
+              : GalleryItemThumbnail(
+            galleryItem: galleryItems[index],
+            onLongPress: () {
+              widget.onImagePress?.call(index);
+            },
+            onTap: () {
+              _openImageFullScreen(index);
+            },
+            loadingWidget: widget.loadingWidget,
+            errorWidget: widget.errorWidget,
+            radius: widget.imageRadius,
+          );
+        });
   }
 
 // build image with number for other images
   Widget _buildImageNumbers(int index) {
     return GestureDetector(
+      onLongPress: () {
+        widget.onImagePress?.call(index);
+      },
       onTap: () {
         _openImageFullScreen(index);
       },
@@ -121,6 +124,7 @@ class _GalleryImageState extends State<GalleryImage> {
             loadingWidget: widget.loadingWidget,
             errorWidget: widget.errorWidget,
             onTap: null,
+            onLongPress: null,
             radius: widget.imageRadius,
           ),
           ClipRRect(
@@ -164,6 +168,7 @@ class _GalleryImageState extends State<GalleryImage> {
           reverse: widget.reverse,
           showListInGalley: widget.showListInGalley,
           showAppBar: widget.showAppBar,
+          appBarActions: widget.appBarActions,
           closeWhenSwipeUp: widget.closeWhenSwipeUp,
           closeWhenSwipeDown: widget.closeWhenSwipeDown,
           radius: widget.imageRadius,
