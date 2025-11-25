@@ -171,6 +171,7 @@ class _GalleryImageState extends State<GalleryImage> {
           appBarActions: widget.appBarActions,
           closeWhenSwipeUp: widget.closeWhenSwipeUp,
           closeWhenSwipeDown: widget.closeWhenSwipeDown,
+          onImagePress: widget.onImagePress, // << pass through
           radius: widget.imageRadius,
         ),
       ),
