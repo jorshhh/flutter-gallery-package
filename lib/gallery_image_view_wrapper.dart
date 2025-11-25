@@ -133,7 +133,7 @@ class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
     return Hero(
         tag: item.id,
         child: GestureDetector(
-          onTap: () {
+          onLongPress: () {
             // Trigger callback for the currently focused/full-screen image
             widget.onImagePress?.call(item.index);
           },
