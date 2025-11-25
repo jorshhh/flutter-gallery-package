@@ -131,24 +131,25 @@ class _GalleryImageViewWrapperState extends State<GalleryImageViewWrapper> {
 // build image with zooming
   Widget _buildImage(GalleryItemModel item) {
     return Hero(
-      tag: item.id,
-      child: GestureDetector(
-        onTap: () {
-          // Trigger callback for the currently focused/full-screen image
-          widget.onImagePress?.call(item.index);
-        },
-        child: InteractiveViewer(
-          minScale: widget.minScale,
-          maxScale: widget.maxScale,
-          child: Center(
-            child: AppCachedNetworkImage(
-              imageUrl: item.imageUrl,
-              loadingWidget: widget.loadingWidget,
-            errorWidget: widget.errorWidget,
-            radius: widget.radius,
+        tag: item.id,
+        child: GestureDetector(
+          onTap: () {
+            // Trigger callback for the currently focused/full-screen image
+            widget.onImagePress?.call(item.index);
+          },
+          child: InteractiveViewer(
+            minScale: widget.minScale,
+            maxScale: widget.maxScale,
+            child: Center(
+              child: AppCachedNetworkImage(
+                imageUrl: item.imageUrl,
+                loadingWidget: widget.loadingWidget,
+                errorWidget: widget.errorWidget,
+                radius: widget.radius,
+              ),
+            ),
           ),
-        ),
-      ),
+        )
     );
   }
 
